@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Collections2 {
-  private static final Pattern SPLIT_PATTERN = Pattern.compile("[, ]+");
+  private static final Pattern SPLIT_PATTERN = Pattern.compile("[, \\->]+");
 
   public static <T> T first(Collection<T> collection) {
     if (null == collection || collection.isEmpty()) {
