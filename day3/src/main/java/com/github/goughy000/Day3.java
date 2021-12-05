@@ -16,7 +16,7 @@ public class Day3 extends Solution {
   }
 
   @Override
-  protected Object part1() {
+  protected Integer part1() {
     var stats = new HashMap<Integer, Integer>();
 
     input()
@@ -36,7 +36,7 @@ public class Day3 extends Solution {
   }
 
   @Override
-  protected Object part2() {
+  protected Integer part2() {
     return calculate(false) * calculate(true);
   }
 

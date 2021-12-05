@@ -43,9 +43,9 @@ public class Day5 extends Solution {
     return new Line(new Point(parts.get(0), parts.get(1)), new Point(parts.get(2), parts.get(3)));
   }
 
-  private static record Point(int x, int y) {}
+  private record Point(int x, int y) {}
 
-  private static record Line(Point a, Point b) {
+  private record Line(Point a, Point b) {
     private boolean equalAxis() {
       return a.x == b.x || a.y == b.y;
     }
