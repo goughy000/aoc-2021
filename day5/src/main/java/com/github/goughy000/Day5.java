@@ -3,6 +3,7 @@ package com.github.goughy000;
 import static com.github.goughy000.Collections2.parseInts;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.IntStream.range;
 
@@ -31,7 +32,7 @@ public class Day5 extends Solution {
         .map(s -> parse(parseInts(s)))
         .filter(filter)
         .flatMap(Line::points)
-        .collect(groupingBy(point -> point))
+        .collect(groupingBy(identity()))
         .values()
         .stream()
         .filter(l -> l.size() > 1)
