@@ -6,6 +6,7 @@ import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -45,7 +46,7 @@ public class Day4 extends Solution {
 
   private Stream<List<Integer>> numbers() {
     var numbers = parseInts(first(input()));
-    return range(0, numbers.size()).mapToObj(index -> numbers.subList(0, index));
+    return range(1, numbers.size()).mapToObj(index -> numbers.subList(0, index));
   }
 
   private List<List<List<Integer>>> boards() {
@@ -68,7 +69,8 @@ public class Day4 extends Solution {
   private static int score(List<List<Integer>> board, List<Integer> picked) {
     return last(picked)
         * board.stream()
-            .flatMap(r -> r.stream().filter(not(picked::contains)))
+            .flatMap(Collection::stream)
+            .filter(not(picked::contains))
             .reduce(0, Integer::sum);
   }
 }

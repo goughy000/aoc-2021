@@ -1,14 +1,11 @@
 package com.github.goughy000;
 
 import static com.github.goughy000.Collections2.parseInts;
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.IntStream.range;
 
+import com.github.goughy000.geometry.Point;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -40,25 +37,16 @@ public class Day5 extends Solution {
   }
 
   private Line parse(List<Integer> parts) {
-    return new Line(new Point(parts.get(0), parts.get(1)), new Point(parts.get(2), parts.get(3)));
+    return new Line(Point.of(parts), Point.of(parts.subList(2, 4)));
   }
-
-  private record Point(int x, int y) {}
 
   private record Line(Point a, Point b) {
     private boolean equalAxis() {
-      return a.x == b.x || a.y == b.y;
+      return a.x() == b.x() || a.y() == b.y();
     }
 
     private Stream<Point> points() {
-      return range(0, max(abs(a.x() - b.x()), abs(a.y() - b.y())) + 1)
-          .mapToObj(delta -> new Point(calc(delta, Point::x), calc(delta, Point::y)));
-    }
-
-    private int calc(int delta, Function<Point, Integer> which) {
-      int a1 = which.apply(a);
-      int b1 = which.apply(b);
-      return b1 > a1 ? a1 + delta : (b1 < a1 ? a1 - delta : a1);
+      return a.toPoint(b);
     }
   }
 }
