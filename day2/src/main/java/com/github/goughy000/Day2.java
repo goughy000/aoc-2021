@@ -4,8 +4,7 @@ import static com.github.goughy000.Collections2.mapList;
 import static java.lang.Integer.parseInt;
 
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
 
 public class Day2 extends Solution {
 
@@ -17,9 +16,9 @@ public class Day2 extends Solution {
   protected Integer part1() {
     return calculate(
         Map.of(
-            "forward", i -> p -> p.horizontal += i,
-            "down", i -> p -> p.depth += i,
-            "up", i -> p -> p.depth -= i));
+            "forward", (p, i) -> p.horizontal += i,
+            "down", (p, i) -> p.depth += i,
+            "up", (p, i) -> p.depth -= i));
   }
 
   @Override
@@ -27,19 +26,18 @@ public class Day2 extends Solution {
     return calculate(
         Map.of(
             "forward",
-                i ->
-                    p -> {
-                      p.horizontal += i;
-                      p.depth += p.aim * i;
-                    },
-            "down", i -> p -> p.aim += i,
-            "up", i -> p -> p.aim -= i));
+                (p, i) -> {
+                  p.horizontal += i;
+                  p.depth += p.aim * i;
+                },
+            "down", (p, i) -> p.aim += i,
+            "up", (p, i) -> p.aim -= i));
   }
 
-  private int calculate(Map<String, Function<Integer, Consumer<Position>>> ops) {
+  private int calculate(Map<String, BiConsumer<Position, Integer>> ops) {
     var p = new Position();
     mapList(input(), Collections2::parseList)
-        .forEach(parts -> ops.get(parts.get(0)).apply(parseInt(parts.get(1))).accept(p));
+        .forEach(parts -> ops.get(parts.get(0)).accept(p, parseInt(parts.get(1))));
 
     return p.horizontal * p.depth;
   }
