@@ -14,15 +14,15 @@ public record Point(int x, int y) {
 
   public Stream<Point> toPoint(Point b) {
     return range(0, max(abs(x() - b.x()), abs(y() - b.y())) + 1)
-        .mapToObj(delta -> new Point(calc(x, b.x, delta), calc(y, b.y, delta)));
+        .mapToObj(delta -> new Point(calc(x(), b.x(), delta), calc(y(), b.y(), delta)));
   }
 
   public Point add(Point other) {
-    return new Point(x + other.x, y + other.y);
+    return new Point(x() + other.x(), y() + other.y());
   }
 
   public Point subtract(Point other) {
-    return new Point(x - other.x, y - other.y);
+    return new Point(x() - other.x(), y() - other.y());
   }
 
   private int calc(int a, int b, int delta) {
