@@ -46,7 +46,7 @@ public class Day4 extends Solution {
 
   private Stream<List<Integer>> numbers() {
     var numbers = parseInts(first(input()));
-    return range(1, numbers.size()).mapToObj(index -> numbers.subList(0, index));
+    return range(SIZE, numbers.size()).mapToObj(index -> numbers.subList(0, index));
   }
 
   private List<List<List<Integer>>> boards() {
