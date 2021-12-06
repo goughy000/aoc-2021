@@ -2,7 +2,7 @@ package com.github.goughy000;
 
 import static com.github.goughy000.Collections2.first;
 import static com.github.goughy000.Collections2.parseInts;
-import static java.lang.System.arraycopy;
+import static java.util.Arrays.copyOfRange;
 
 import java.util.stream.LongStream;
 
@@ -29,11 +29,9 @@ public class Day6 extends Solution {
     }
 
     for (var i = 0; i < days; i++) {
-      var shifted = new long[9];
-      arraycopy(fish, 1, shifted, 0, 8);
-      shifted[6] += fish[0];
-      shifted[8] = fish[0];
-      fish = shifted;
+      var n = fish[0];
+      fish = copyOfRange(fish, 1, 10);
+      fish[6] += fish[8] = n;
     }
     return LongStream.of(fish).sum();
   }
