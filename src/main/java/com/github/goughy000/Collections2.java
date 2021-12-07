@@ -23,7 +23,7 @@ public final class Collections2 {
   }
 
   public static <T, R> List<R> mapList(List<T> input, Function<T, R> mapper) {
-    return input.stream().map(mapper).collect(toList());
+    return input.stream().map(mapper).toList();
   }
 
   public static <T> T last(List<T> list) {
