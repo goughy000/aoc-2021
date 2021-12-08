@@ -2,9 +2,9 @@ package com.github.goughy000;
 
 import static com.github.goughy000.Collections2.*;
 import static java.lang.Long.parseLong;
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -44,17 +44,11 @@ public class Day8 extends Solution {
     return permutations(List.of("a", "b", "c", "d", "e", "f", "g")).stream()
         .map(
             perm ->
-                List.of(
-                    mask(perm, "abcefg"),
-                    mask(perm, "cf"),
-                    mask(perm, "acdeg"),
-                    mask(perm, "acdfg"),
-                    mask(perm, "bcdf"),
-                    mask(perm, "abdfg"),
-                    mask(perm, "abdefg"),
-                    mask(perm, "acf"),
-                    mask(perm, "abcdefg"),
-                    mask(perm, "abcdfg")))
+                mapList(
+                    List.of(
+                        "abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf",
+                        "abcdefg", "abcdfg"),
+                    s -> mask(perm, s)))
         .filter(patterns::containsAll)
         .findFirst()
         .orElseThrow();
@@ -81,6 +75,6 @@ public class Day8 extends Solution {
   }
 
   private static String order(String s) {
-    return Arrays.stream(s.split("")).sorted().collect(joining());
+    return stream(s.split("")).sorted().collect(joining());
   }
 }
