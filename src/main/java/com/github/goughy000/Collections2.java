@@ -1,10 +1,11 @@
 package com.github.goughy000;
 
 import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -43,9 +44,29 @@ public final class Collections2 {
 
   public static <T> List<T> parseList(String value, Function<String, T> converter) {
     if (null == value || value.isBlank()) {
-      return Collections.emptyList();
+      return emptyList();
     }
 
     return stream(SPLIT_PATTERN.split(value.strip())).map(converter).collect(toList());
+  }
+
+  public static <E> List<List<E>> permutations(List<E> original) {
+    if (original.isEmpty()) {
+      return List.of(emptyList());
+    }
+
+    var copy = new ArrayList<>(original);
+
+    E firstElement = copy.remove(0);
+    List<List<E>> returnValue = new ArrayList<>();
+    List<List<E>> permutations = permutations(copy);
+    for (List<E> smaller : permutations) {
+      for (int index = 0; index <= smaller.size(); index++) {
+        List<E> temp = new ArrayList<>(smaller);
+        temp.add(index, firstElement);
+        returnValue.add(temp);
+      }
+    }
+    return returnValue;
   }
 }
