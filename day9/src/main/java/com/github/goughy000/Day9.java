@@ -20,13 +20,13 @@ public class Day9 extends Solution {
   @Override
   protected Integer part1() {
     var heights = heights();
-    return lowPoints(heights).stream().map(heights::get).map(i -> i + 1).reduce(0, Integer::sum);
+    return lowPoints(heights).map(heights::get).map(i -> i + 1).reduce(0, Integer::sum);
   }
 
   @Override
   protected Integer part2() {
     var heights = heights();
-    return lowPoints(heights).stream()
+    return lowPoints(heights)
         .map(point -> count(heights, point))
         .sorted(reverseOrder())
         .limit(3)
@@ -47,11 +47,10 @@ public class Day9 extends Solution {
     return checked.size();
   }
 
-  private List<Point> lowPoints(Map<Point, Integer> heights) {
+  private Stream<Point> lowPoints(Map<Point, Integer> heights) {
     return heights.keySet().stream()
         .filter(
-            point -> adjacent(point, heights).allMatch(p -> heights.get(p) > heights.get(point)))
-        .toList();
+            point -> adjacent(point, heights).allMatch(p -> heights.get(p) > heights.get(point)));
   }
 
   private Stream<Point> adjacent(Point point, Map<Point, ?> points) {
