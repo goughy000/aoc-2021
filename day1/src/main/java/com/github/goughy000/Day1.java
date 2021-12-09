@@ -13,10 +13,6 @@ public class Day1 extends Solution {
     new Day1().main();
   }
 
-  private List<Integer> numbers() {
-    return mapList(input(), Integer::valueOf);
-  }
-
   @Override
   protected Long part1() {
     return countIncrease(numbers());
@@ -29,6 +25,10 @@ public class Day1 extends Solution {
             .collect(windowed(3))
             .map(window -> window.stream().reduce(0, Integer::sum))
             .collect(toList()));
+  }
+
+  private List<Integer> numbers() {
+    return mapList(input(), Integer::valueOf);
   }
 
   private long countIncrease(List<Integer> numbers) {

@@ -42,6 +42,13 @@ public final class Collections2 {
     return parseList(value, Integer::parseInt);
   }
 
+  public static List<String> chars(String value) {
+    if (null == value) {
+      return emptyList();
+    }
+    return value.chars().mapToObj(i -> String.valueOf((char) i)).toList();
+  }
+
   public static <T> List<T> parseList(String value, Function<String, T> converter) {
     if (null == value || value.isBlank()) {
       return emptyList();

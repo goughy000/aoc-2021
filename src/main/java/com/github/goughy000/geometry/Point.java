@@ -17,8 +17,8 @@ public record Point(int x, int y) {
         .mapToObj(delta -> new Point(calc(x(), b.x(), delta), calc(y(), b.y(), delta)));
   }
 
-  public List<Point> adjacentPoints() {
-    return List.of(north(), east(), south(), west());
+  public Stream<Point> adjacentPoints() {
+    return Stream.of(north(), east(), south(), west());
   }
 
   public Point north() {
