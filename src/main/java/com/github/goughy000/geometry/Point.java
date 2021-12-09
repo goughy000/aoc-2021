@@ -17,6 +17,26 @@ public record Point(int x, int y) {
         .mapToObj(delta -> new Point(calc(x(), b.x(), delta), calc(y(), b.y(), delta)));
   }
 
+  public List<Point> adjacentPoints() {
+    return List.of(north(), east(), south(), west());
+  }
+
+  public Point north() {
+    return new Point(x, y + 1);
+  }
+
+  public Point east() {
+    return new Point(x + 1, y);
+  }
+
+  public Point south() {
+    return new Point(x, y - 1);
+  }
+
+  public Point west() {
+    return new Point(x - 1, y);
+  }
+
   public Point add(Point other) {
     return new Point(x() + other.x(), y() + other.y());
   }
