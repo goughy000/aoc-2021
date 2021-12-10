@@ -28,7 +28,7 @@ public class Day9 extends Solution {
   protected Integer part2() {
     var heights = heights();
     return lowPoints(heights)
-        .map(point -> count(heights, point))
+        .map(point -> basinSize(heights, point, new HashSet<>()))
         .sorted(reverseOrder())
         .limit(3)
         .reduce(1, (a, b) -> a * b);
@@ -53,19 +53,14 @@ public class Day9 extends Solution {
             point -> adjacent(point, heights).allMatch(p -> heights.get(p) > heights.get(point)));
   }
 
-  private static int count(Map<Point, Integer> heights, Point point) {
-    var checked = new ArrayList<Point>();
-    check(heights, point, checked);
-    return checked.size();
-  }
-
-  private static void check(Map<Point, Integer> heights, Point point, List<Point> checked) {
+  private static int basinSize(Map<Point, Integer> heights, Point point, Set<Point> checked) {
     checked.add(point);
     adjacent(point, heights)
         .filter(not(checked::contains))
         .filter(p -> heights.get(p) != 9)
         .filter(p -> heights.get(p) > heights.get(point))
-        .forEach(p -> check(heights, p, checked));
+        .forEach(p -> basinSize(heights, p, checked));
+    return checked.size();
   }
 
   private static Stream<Point> adjacent(Point point, Map<Point, ?> points) {

@@ -1,6 +1,8 @@
 package com.github.goughy000;
 
 import static com.github.goughy000.Collections2.transpose;
+import static java.lang.Math.addExact;
+import static java.lang.Math.multiplyExact;
 
 import java.util.*;
 import java.util.function.ToLongFunction;
@@ -18,7 +20,7 @@ public class Day10 extends Solution {
   protected Long part1() {
     var scores = Map.of(')', 3L, ']', 57L, '}', 1197L, '>', 25137L);
 
-    return score(scores::get, x -> 0L).reduce(0L, Long::sum);
+    return score(scores::get, x -> 0L).reduce(0L, Math::addExact);
   }
 
   @Override
@@ -31,8 +33,7 @@ public class Day10 extends Solution {
                 stack -> {
                   var score = 0L;
                   while (!stack.isEmpty()) {
-                    score *= 5L;
-                    score += scores.get(stack.removeLast());
+                    score = addExact(multiplyExact(score, 5), scores.get(stack.removeLast()));
                   }
 
                   return score;

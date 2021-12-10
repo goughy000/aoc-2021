@@ -19,13 +19,6 @@ allprojects {
   dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-  }
-
-  test {
-    useJUnitPlatform()
   }
 
   spotless {
@@ -41,7 +34,27 @@ allprojects {
   }
 }
 
+var verification = project('verification') {
+  dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.0'
+    testImplementation 'org.assertj:assertj-core:3.21.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+  }
+
+  test {
+    useJUnitPlatform()
+  }
+}
+
 subprojects {
+
+  if (project != verification) {
+    verification.dependencies {
+      implementation project
+    }
+  }
+
   dependencies {
     implementation project(':')
   }

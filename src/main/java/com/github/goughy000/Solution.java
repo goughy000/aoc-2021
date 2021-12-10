@@ -2,29 +2,39 @@ package com.github.goughy000;
 
 import static java.lang.String.join;
 import static java.lang.System.out;
-import static java.nio.file.Files.readAllLines;
 import static java.util.Collections.nCopies;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.nio.file.Path;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Solution {
-  private static final String DEFAULT_INPUT = "input.txt";
-
   protected List<String> input() {
-    return input(DEFAULT_INPUT);
+    return input(getClass().getSimpleName() + ".txt");
   }
 
   protected List<String> input(String file) {
-    try {
-      var url = getClass().getResource(file);
-      return readAllLines(Path.of(URI.create(url.toString())));
+    try (var is = getResource(file);
+        var isr = new InputStreamReader(is);
+        var br = new BufferedReader(isr)) {
+
+      var lines = new ArrayList<String>();
+      while (br.ready()) {
+        lines.add(br.readLine());
+      }
+
+      return lines;
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
     }
+  }
+
+  private InputStream getResource(String resource) {
+    var is = getClass().getResourceAsStream(resource);
+    if (null == is) {
+      throw new RuntimeException("Unable to find resource " + resource);
+    }
+    return is;
   }
 
   protected abstract Object part1();
