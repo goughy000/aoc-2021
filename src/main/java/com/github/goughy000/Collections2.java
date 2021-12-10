@@ -3,10 +3,13 @@ package com.github.goughy000;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import lombok.AccessLevel;
@@ -75,5 +78,9 @@ public final class Collections2 {
       }
     }
     return returnValue;
+  }
+
+  public static <K, V> Map<K, V> transpose(Map<V, K> map) {
+    return map.entrySet().stream().collect(toMap(Entry::getValue, Entry::getKey));
   }
 }
