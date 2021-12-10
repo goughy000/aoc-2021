@@ -2,9 +2,7 @@ package com.github.goughy000;
 
 import static com.github.goughy000.Collections2.transpose;
 
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
@@ -39,7 +37,7 @@ public class Day10 extends Solution {
 
                   return score;
                 })
-            .filter(score -> score > 0L)
+            .filter(x -> x > 0L)
             .sorted()
             .toList();
 
