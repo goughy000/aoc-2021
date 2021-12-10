@@ -9,9 +9,8 @@ import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
 public class Day10 extends Solution {
-  private static final Map<Character, Character> PAIRS =
-      Map.of('(', ')', '[', ']', '{', '}', '<', '>');
-  private static final Map<Character, Character> REVERSE = transpose(PAIRS);
+  private static final Map<Character, Character> REVERSE =
+      transpose(Map.of('(', ')', '[', ']', '{', '}', '<', '>'));
 
   public static void main(String[] args) {
     new Day10().main();
@@ -26,7 +25,7 @@ public class Day10 extends Solution {
 
   @Override
   protected Long part2() {
-    var scores = Map.of(')', 1, ']', 2, '}', 3, '>', 4);
+    var scores = Map.of('(', 1, '[', 2, '{', 3, '<', 4);
 
     var results =
         score(
@@ -34,9 +33,8 @@ public class Day10 extends Solution {
                 stack -> {
                   var score = 0L;
                   while (!stack.isEmpty()) {
-                    var close = PAIRS.get(stack.removeLast());
                     score *= 5L;
-                    score += scores.get(close);
+                    score += scores.get(stack.removeLast());
                   }
 
                   return score;
