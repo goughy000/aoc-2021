@@ -41,7 +41,7 @@ public class Day11 extends Solution {
           flashes++;
 
           location
-              .adjacentLocationsAll()
+              .principals()
               .forEach(
                   adjacent -> {
                     var value = adjacent.getValue();

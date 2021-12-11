@@ -17,11 +17,11 @@ public record Point(int x, int y) {
         .mapToObj(delta -> new Point(calc(x(), b.x(), delta), calc(y(), b.y(), delta)));
   }
 
-  public Stream<Point> adjacentPoints() {
+  public Stream<Point> cardinals() {
     return Stream.of(north(), east(), south(), west());
   }
 
-  public Stream<Point> adjacentPointsAll() {
+  public Stream<Point> principals() {
     return Stream.of(
         north(), northEast(), east(), southEast(), south(), southWest(), west(), northWest());
   }

@@ -3,14 +3,11 @@ package com.github.goughy000;
 import static com.github.goughy000.Collections2.chars;
 import static com.github.goughy000.Collections2.mapList;
 import static java.util.Comparator.reverseOrder;
-import static java.util.Map.entry;
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.IntStream.range;
 
-import com.github.goughy000.geometry.Point;
+import com.github.goughy000.geometry.Grid;
+import com.github.goughy000.geometry.Grid.GridLocation;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 public class Day9 extends Solution {
@@ -20,50 +17,32 @@ public class Day9 extends Solution {
 
   @Override
   protected Integer part1() {
-    var heights = heights();
-    return lowPoints(heights).map(heights::get).map(i -> ++i).reduce(0, Integer::sum);
+    return lowPoints().map(l -> l.getValue() + 1).reduce(0, Integer::sum);
   }
 
   @Override
   protected Integer part2() {
-    var heights = heights();
-    return lowPoints(heights)
-        .map(point -> basinSize(heights, point, new HashSet<>()))
+    return lowPoints()
+        .map(location -> basinSize(location, new HashSet<>()))
         .sorted(reverseOrder())
         .limit(3)
         .reduce(1, (a, b) -> a * b);
   }
 
-  private Map<Point, Integer> heights() {
-    var lines = input();
-
-    return range(0, lines.size())
-        .boxed()
-        .flatMap(
-            y -> {
-              var row = mapList(chars(lines.get(y)), Integer::parseInt);
-              return range(0, row.size()).mapToObj(x -> entry(new Point(x, y), row.get(x)));
-            })
-        .collect(toMap(Entry::getKey, Entry::getValue));
+  private Stream<GridLocation<Integer>> lowPoints() {
+    return Grid.ofLines(input(), r -> mapList(chars(r), Integer::parseInt)).locations().stream()
+        .filter(l -> l.cardinals().allMatch(a -> a.getValue() > l.getValue()));
   }
 
-  private static Stream<Point> lowPoints(Map<Point, Integer> heights) {
-    return heights.keySet().stream()
-        .filter(
-            point -> adjacent(point, heights).allMatch(p -> heights.get(p) > heights.get(point)));
-  }
+  private static int basinSize(GridLocation<Integer> location, Set<GridLocation<Integer>> checked) {
+    checked.add(location);
 
-  private static int basinSize(Map<Point, Integer> heights, Point point, Set<Point> checked) {
-    checked.add(point);
-    adjacent(point, heights)
+    location
+        .cardinals()
         .filter(not(checked::contains))
-        .filter(p -> heights.get(p) != 9)
-        .filter(p -> heights.get(p) > heights.get(point))
-        .forEach(p -> basinSize(heights, p, checked));
+        .filter(l -> l.getValue() != 9)
+        .filter(l -> l.getValue() > location.getValue())
+        .forEach(l -> basinSize(l, checked));
     return checked.size();
-  }
-
-  private static Stream<Point> adjacent(Point point, Map<Point, ?> points) {
-    return point.adjacentPoints().filter(points::containsKey);
   }
 }

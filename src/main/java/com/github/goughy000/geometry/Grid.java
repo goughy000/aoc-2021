@@ -76,7 +76,7 @@ public class Grid<T> {
     }
   }
 
-  public static <T> Grid<T> ofLines(List<String> lines, Function<String, List<T>> rowMapper) {
+  public static <T, U> Grid<T> ofLines(List<U> lines, Function<U, List<T>> rowMapper) {
     var map = new HashMap<Point, T>();
     var width = 0;
     for (int y = 0; y < lines.size(); y++) {
@@ -118,18 +118,12 @@ public class Grid<T> {
       grid.setValue(this.point, value);
     }
 
-    public Stream<GridLocation<T>> adjacentLocations() {
-      return point
-          .adjacentPoints()
-          .filter(grid::containsPoint)
-          .map(p -> new GridLocation<>(grid, p));
+    public Stream<GridLocation<T>> cardinals() {
+      return point.cardinals().filter(grid::containsPoint).map(p -> new GridLocation<>(grid, p));
     }
 
-    public Stream<GridLocation<T>> adjacentLocationsAll() {
-      return point
-          .adjacentPointsAll()
-          .filter(grid::containsPoint)
-          .map(p -> new GridLocation<>(grid, p));
+    public Stream<GridLocation<T>> principals() {
+      return point.principals().filter(grid::containsPoint).map(p -> new GridLocation<>(grid, p));
     }
   }
 }
