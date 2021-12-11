@@ -6,7 +6,7 @@ import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
-import java.util.Collection;
+import com.github.goughy000.geometry.Grid;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -33,7 +33,7 @@ public class Day4 extends Solution {
     return winningScore(boards);
   }
 
-  private Integer winningScore(List<List<List<Integer>>> boards) {
+  private Integer winningScore(List<Grid<Integer>> boards) {
     return numbers()
         .flatMap(
             picked ->
@@ -49,28 +49,20 @@ public class Day4 extends Solution {
     return range(SIZE, numbers.size()).mapToObj(index -> numbers.subList(0, index));
   }
 
-  private List<List<List<Integer>>> boards() {
+  private List<Grid<Integer>> boards() {
     return input().stream()
         .skip(1)
         .filter(not(String::isBlank))
         .collect(chunked(SIZE))
-        .map(chunk -> mapList(chunk, Collections2::parseInts))
+        .map(chunk -> Grid.ofLines(chunk, Collections2::parseInts))
         .collect(toList());
   }
 
-  private static boolean isWinner(List<List<Integer>> board, List<Integer> picked) {
-    return range(0, SIZE)
-        .anyMatch(
-            x ->
-                picked.containsAll(mapList(board, r -> r.get(x)))
-                    || picked.containsAll(board.get(x)));
+  private static boolean isWinner(Grid<Integer> board, List<Integer> picked) {
+    return board.lines().map(line -> line.values().toList()).anyMatch(picked::containsAll);
   }
 
-  private static int score(List<List<Integer>> board, List<Integer> picked) {
-    return last(picked)
-        * board.stream()
-            .flatMap(Collection::stream)
-            .filter(not(picked::contains))
-            .reduce(0, Integer::sum);
+  private static int score(Grid<Integer> board, List<Integer> picked) {
+    return last(picked) * board.values().filter(not(picked::contains)).reduce(0, Integer::sum);
   }
 }

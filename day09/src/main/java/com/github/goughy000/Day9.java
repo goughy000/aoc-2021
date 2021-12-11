@@ -30,7 +30,8 @@ public class Day9 extends Solution {
   }
 
   private Stream<GridLocation<Integer>> lowPoints() {
-    return Grid.ofLines(input(), r -> mapList(chars(r), Integer::parseInt)).locations().stream()
+    return Grid.ofLines(input(), r -> mapList(chars(r), Integer::parseInt))
+        .locations()
         .filter(l -> l.cardinals().allMatch(a -> a.getValue() > l.getValue()));
   }
 

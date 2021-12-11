@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public record Point(int x, int y) {
+  public static final Point ZERO = new Point(0, 0);
+
   public static Point of(List<Integer> coordinates) {
     return new Point(coordinates.get(0), coordinates.get(1));
   }
@@ -27,11 +29,11 @@ public record Point(int x, int y) {
   }
 
   public Point north() {
-    return new Point(x, y + 1);
+    return new Point(x, y - 1);
   }
 
   public Point northEast() {
-    return new Point(x + 1, y + 1);
+    return new Point(x + 1, y - 1);
   }
 
   public Point east() {
@@ -39,15 +41,15 @@ public record Point(int x, int y) {
   }
 
   public Point southEast() {
-    return new Point(x + 1, y - 1);
+    return new Point(x + 1, y + 1);
   }
 
   public Point south() {
-    return new Point(x, y - 1);
+    return new Point(x, y + 1);
   }
 
   public Point southWest() {
-    return new Point(x - 1, y - 1);
+    return new Point(x - 1, y + 1);
   }
 
   public Point west() {
@@ -55,7 +57,7 @@ public record Point(int x, int y) {
   }
 
   public Point northWest() {
-    return new Point(x - 1, y + 1);
+    return new Point(x - 1, y - 1);
   }
 
   public Point add(Point other) {
