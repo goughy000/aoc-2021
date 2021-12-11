@@ -23,7 +23,8 @@ class VerificationTest {
             args(new Day7(), 328187, 91257582),
             args(new Day8(), 237L, 1009098L),
             args(new Day9(), 558, 882942),
-            args(new Day10(), 318099L, 2389738699L))
+            args(new Day10(), 318099L, 2389738699L),
+            args(new Day11(), 1585, 382))
         .flatMap(
             a ->
                 Stream.of(
@@ -31,7 +32,7 @@ class VerificationTest {
                     test(a.solution(), "Part 2", Solution::part2, a.two())));
   }
 
-  private DynamicTest test(
+  private static DynamicTest test(
       Solution solution, String name, Function<Solution, Object> action, Object expected) {
     return dynamicTest(
         format("[%s] %s", solution.getClass().getSimpleName(), name),

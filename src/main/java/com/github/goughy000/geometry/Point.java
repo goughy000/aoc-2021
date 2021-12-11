@@ -21,20 +21,41 @@ public record Point(int x, int y) {
     return Stream.of(north(), east(), south(), west());
   }
 
+  public Stream<Point> adjacentPointsAll() {
+    return Stream.of(
+        north(), northEast(), east(), southEast(), south(), southWest(), west(), northWest());
+  }
+
   public Point north() {
     return new Point(x, y + 1);
+  }
+
+  public Point northEast() {
+    return new Point(x + 1, y + 1);
   }
 
   public Point east() {
     return new Point(x + 1, y);
   }
 
+  public Point southEast() {
+    return new Point(x + 1, y - 1);
+  }
+
   public Point south() {
     return new Point(x, y - 1);
   }
 
+  public Point southWest() {
+    return new Point(x - 1, y - 1);
+  }
+
   public Point west() {
     return new Point(x - 1, y);
+  }
+
+  public Point northWest() {
+    return new Point(x - 1, y + 1);
   }
 
   public Point add(Point other) {
