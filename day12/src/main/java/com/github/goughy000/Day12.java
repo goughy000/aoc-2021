@@ -41,11 +41,7 @@ public class Day12 extends Solution {
         input().stream()
             .map(Collections2::parseList)
             .flatMap(parts -> Stream.of(parts, List.of(last(parts), first(parts))))
-            .collect(
-                toMap(
-                    Collections2::first,
-                    parts -> singletonList(last(parts)),
-                    Collections2::concat));
+            .collect(groupingBy(Collections2::first, mapping(Collections2::last, toList())));
     return routes(START, links, emptyList(), traverse);
   }
 
