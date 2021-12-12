@@ -94,4 +94,18 @@ public final class Collections2 {
   public static <T> long count(List<T> list, T value) {
     return list.stream().filter(x -> Objects.equals(x, value)).count();
   }
+
+  public static <T> T only(Collection<T> collection) {
+    var size = collection.size();
+    if (size != 1) {
+      throw new IllegalStateException("collection contains " + size + " items");
+    }
+    return first(collection);
+  }
+
+  public static <T extends Comparable<? super T>> List<T> sort(List<T> list) {
+    var sorted = new ArrayList<T>(list);
+    Collections.sort(sorted);
+    return sorted;
+  }
 }
