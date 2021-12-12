@@ -20,25 +20,20 @@ public class Day12 extends Solution {
 
   @Override
   protected Long part1() {
-    return routes((path, next) -> isBig(next) || !path.contains(next)).count();
+    return routes((path, next) -> !path.contains(next)).count();
   }
 
   @Override
   protected Long part2() {
     return routes(
             (path, next) ->
-                isBig(next)
-                    || (!START.equals(next)
-                        && (!path.contains(next)
-                            || !path.stream()
-                                .filter(not(this::isBig))
-                                .collect(groupingBy(identity(), counting()))
-                                .containsValue(2L))))
+                !START.equals(next)
+                    && (!path.contains(next)
+                        || !path.stream()
+                            .filter(not(this::isBig))
+                            .collect(groupingBy(identity(), counting()))
+                            .containsValue(2L)))
         .count();
-  }
-
-  private boolean isBig(String name) {
-    return name.toUpperCase().equals(name);
   }
 
   private Stream<List<String>> routes(BiPredicate<List<String>, String> traverse) {
@@ -54,7 +49,7 @@ public class Day12 extends Solution {
     return routes(START, links, emptyList(), traverse);
   }
 
-  private static Stream<List<String>> routes(
+  private Stream<List<String>> routes(
       String start,
       Map<String, List<String>> links,
       List<String> current,
@@ -65,8 +60,12 @@ public class Day12 extends Solution {
             next ->
                 END.equals(next)
                     ? Stream.of(concat(path, next))
-                    : traverse.test(path, next)
+                    : isBig(next) || traverse.test(path, next)
                         ? routes(next, links, path, traverse)
                         : Stream.empty());
+  }
+
+  private boolean isBig(String name) {
+    return Character.isUpperCase(name.charAt(0));
   }
 }
