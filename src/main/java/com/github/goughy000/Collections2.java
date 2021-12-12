@@ -2,16 +2,15 @@ package com.github.goughy000;
 
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -82,5 +81,17 @@ public final class Collections2 {
 
   public static <K, V> Map<K, V> transpose(Map<V, K> map) {
     return map.entrySet().stream().collect(toMap(Entry::getValue, Entry::getKey));
+  }
+
+  public static <T> List<T> concat(List<T> a, T b) {
+    return concat(a, singletonList(b));
+  }
+
+  public static <T> List<T> concat(List<T> a, List<T> b) {
+    return Stream.concat(a.stream(), b.stream()).toList();
+  }
+
+  public static <T> long count(List<T> list, T value) {
+    return list.stream().filter(x -> Objects.equals(x, value)).count();
   }
 }

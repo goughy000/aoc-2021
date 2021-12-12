@@ -57,8 +57,8 @@ public class Grid<T> {
     map.put(point, value);
   }
 
-  public void forEach(Consumer<GridLocation<T>> consumer) {
-    map.forEach((p, v) -> consumer.accept(location(p)));
+  public void forEach(Consumer<? super GridLocation<T>> consumer) {
+    locations().forEach(consumer);
   }
 
   public Stream<GridLine<T>> rows() {

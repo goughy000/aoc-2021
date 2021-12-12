@@ -24,7 +24,8 @@ class VerificationTest {
             args(new Day8(), 237L, 1009098L),
             args(new Day9(), 558, 882942),
             args(new Day10(), 318099L, 2389738699L),
-            args(new Day11(), 1585L, 382L))
+            args(new Day11(), 1585L, 382L),
+            args(new Day12(), 5874L, 153592L))
         .flatMap(
             a ->
                 Stream.of(
