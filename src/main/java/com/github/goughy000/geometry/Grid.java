@@ -7,7 +7,6 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Grid<T> {
@@ -103,50 +102,20 @@ public class Grid<T> {
   }
 
   public Grid<T> fold(Axis axis, int fold, BinaryOperator<T> merge) {
-    if (axis == Axis.X) {
-      return fold(
-          Point::x,
-          p -> new Point(fold - (p.x() - fold), p.y()),
-          () -> (long) fold,
-          () -> height,
-          fold,
-          merge);
-    } else if (axis == Axis.Y) {
-      return fold(
-          Point::y,
-          p -> new Point(p.x(), fold - (p.y() - fold)),
-          () -> width,
-          () -> (long) fold,
-          fold,
-          merge);
+    var folded = new HashMap<Point, T>();
+    for (var entry : map.entrySet()) {
+      var point = entry.getKey();
+      var destination = axis.mirror(point, fold);
+      if (destination == null) continue;
+      folded.merge(destination, entry.getValue(), merge);
     }
-    throw new UnsupportedOperationException("unknown axis " + axis);
-  }
 
-  private Grid<T> fold(
-      Function<Point, Integer> value,
-      Function<Point, Point> newPoint,
-      Supplier<Long> width,
-      Supplier<Long> height,
-      int fold,
-      BinaryOperator<T> merge) {
-    var copy = new HashMap<Point, T>();
-    // copy in all before the fold
-    for (var entry : map.entrySet()) {
-      var point = entry.getKey();
-      if (value.apply(point) < fold) {
-        copy.put(point, entry.getValue());
-      }
+    if (axis == Axis.X) {
+      return new Grid<>(folded, fold, height);
+    } else if (axis == Axis.Y) {
+      return new Grid<>(folded, width, fold);
     }
-    // merge in from after the fold
-    for (var entry : map.entrySet()) {
-      var point = entry.getKey();
-      if (value.apply(point) > fold) {
-        var destination = newPoint.apply(point);
-        copy.merge(destination, entry.getValue(), merge);
-      }
-    }
-    return new Grid<>(copy, width.get(), height.get());
+    throw new UnsupportedOperationException("unsupported axis " + axis);
   }
 
   public static <T, U> Grid<T> ofLines(List<U> lines, Function<U, List<T>> rowMapper) {
