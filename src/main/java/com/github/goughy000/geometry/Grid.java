@@ -4,8 +4,10 @@ import static java.lang.String.format;
 import static java.util.stream.Stream.iterate;
 
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Grid<T> {
@@ -40,7 +42,7 @@ public class Grid<T> {
   }
 
   public boolean containsPoint(Point point) {
-    return map.containsKey(point);
+    return point.x() >= 0 && point.x() < width && point.y() >= 0 && point.y() < height;
   }
 
   public boolean containsValue(T value) {
@@ -100,6 +102,53 @@ public class Grid<T> {
     }
   }
 
+  public Grid<T> fold(Axis axis, int fold, BinaryOperator<T> merge) {
+    if (axis == Axis.X) {
+      return fold(
+          Point::x,
+          p -> new Point(fold - (p.x() - fold), p.y()),
+          () -> (long) fold,
+          () -> height,
+          fold,
+          merge);
+    } else if (axis == Axis.Y) {
+      return fold(
+          Point::y,
+          p -> new Point(p.x(), fold - (p.y() - fold)),
+          () -> width,
+          () -> (long) fold,
+          fold,
+          merge);
+    }
+    throw new UnsupportedOperationException("unknown axis " + axis);
+  }
+
+  private Grid<T> fold(
+      Function<Point, Integer> value,
+      Function<Point, Point> newPoint,
+      Supplier<Long> width,
+      Supplier<Long> height,
+      int fold,
+      BinaryOperator<T> merge) {
+    var copy = new HashMap<Point, T>();
+    // copy in all before the fold
+    for (var entry : map.entrySet()) {
+      var point = entry.getKey();
+      if (value.apply(point) < fold) {
+        copy.put(point, entry.getValue());
+      }
+    }
+    // merge in from after the fold
+    for (var entry : map.entrySet()) {
+      var point = entry.getKey();
+      if (value.apply(point) > fold) {
+        var destination = newPoint.apply(point);
+        copy.merge(destination, entry.getValue(), merge);
+      }
+    }
+    return new Grid<>(copy, width.get(), height.get());
+  }
+
   public static <T, U> Grid<T> ofLines(List<U> lines, Function<U, List<T>> rowMapper) {
     var map = new HashMap<Point, T>();
     var width = 0L;
@@ -115,21 +164,31 @@ public class Grid<T> {
     return new Grid<>(map, width, lines.size());
   }
 
+  public static <T> Grid<T> ofPoints(List<Point> points, Function<Point, T> value) {
+    var map = new HashMap<Point, T>();
+    var width = -1L;
+    var height = -1L;
+    for (var point : points) {
+      if (point.x() > width) width = point.x();
+      if (point.y() > height) height = point.y();
+      map.put(point, value.apply(point));
+    }
+    return new Grid<>(map, width + 1, height + 1);
+  }
+
   @Override
   public String toString() {
     var sb = new StringBuilder();
 
     var pad = 1 + values().map(Object::toString).map(String::length).reduce(0, Math::max);
 
-    var point = Point.ZERO;
-    while (map.containsKey(point)) {
-      while (map.containsKey(point)) {
-        var v = map.get(point);
-        sb.append(format("%1$" + pad + "s", v));
-        point = point.east();
+    for (var y = 0; y < height; y++) {
+      for (var x = 0; x < width; x++) {
+        var v = getValue(x, y);
+        var s = v == null ? "." : String.valueOf(v);
+        sb.append(format("%1$" + pad + "s", s));
       }
       sb.append(format("%n"));
-      point = new Point(0, point.y() + 1);
     }
 
     return sb.toString();

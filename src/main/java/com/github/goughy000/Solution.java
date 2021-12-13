@@ -1,5 +1,6 @@
 package com.github.goughy000;
 
+import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.lang.System.out;
 import static java.util.Collections.nCopies;
@@ -45,9 +46,26 @@ public abstract class Solution {
     delimiter("=");
     print("Advent Of Code %s", getClass().getSimpleName());
     delimiter("-");
-    print("Part 1: %s", part1());
-    print("Part 2: %s", part2());
+    printSolution(1, part1());
+    printSolution(2, part2());
     delimiter("=");
+  }
+
+  private void printSolution(int part, Object value) {
+    if (null == value) return;
+    var lines = String.valueOf(value).lines().toList();
+    if (lines.isEmpty()) return;
+
+    var sb = new StringBuilder("Part ").append(part).append(":");
+    if (lines.size() > 1) {
+      sb.append(format("%n"));
+    } else if (lines.size() == 1) {
+      sb.append(" ");
+    }
+    for (var line : lines) {
+      sb.append(format("%s%n", line));
+    }
+    out.print(sb);
   }
 
   private void print(String s, Object... args) {
