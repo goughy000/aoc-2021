@@ -183,12 +183,12 @@ public class Grid<T> {
     var pad = 1 + values().map(Object::toString).map(String::length).reduce(0, Math::max);
 
     for (var y = 0; y < height; y++) {
+      if (y > 0) sb.append(format("%n"));
       for (var x = 0; x < width; x++) {
         var v = getValue(x, y);
         var s = v == null ? "." : String.valueOf(v);
         sb.append(format("%1$" + pad + "s", s));
       }
-      sb.append(format("%n"));
     }
 
     return sb.toString();

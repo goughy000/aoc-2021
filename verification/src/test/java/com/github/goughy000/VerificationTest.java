@@ -1,15 +1,27 @@
 package com.github.goughy000;
 
 import static java.lang.String.format;
+import static java.lang.String.join;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
 class VerificationTest {
+  private static final String D13P2 =
+      join(
+          format("%n"),
+          List.of(
+              " ▒ ▒ ▒ . . ▒ . . . . ▒ ▒ ▒ . . . ▒ ▒ . . . . ▒ ▒ . . ▒ ▒ . . ▒ . . . . ▒ . . ▒ .",
+              " ▒ . . ▒ . ▒ . . . . ▒ . . ▒ . ▒ . . ▒ . . . . ▒ . ▒ . . ▒ . ▒ . . . . ▒ . . ▒ .",
+              " ▒ . . ▒ . ▒ . . . . ▒ ▒ ▒ . . ▒ . . . . . . . ▒ . ▒ . . . . ▒ . . . . ▒ . . ▒ .",
+              " ▒ ▒ ▒ . . ▒ . . . . ▒ . . ▒ . ▒ . . . . . . . ▒ . ▒ . ▒ ▒ . ▒ . . . . ▒ . . ▒ .",
+              " ▒ . ▒ . . ▒ . . . . ▒ . . ▒ . ▒ . . ▒ . ▒ . . ▒ . ▒ . . ▒ . ▒ . . . . ▒ . . ▒ .",
+              " ▒ . . ▒ . ▒ ▒ ▒ ▒ . ▒ ▒ ▒ . . . ▒ ▒ . . . ▒ ▒ . . . ▒ ▒ ▒ . ▒ ▒ ▒ ▒ . . ▒ ▒ . ."));
 
   @TestFactory
   Stream<DynamicTest> tests() {
@@ -26,11 +38,7 @@ class VerificationTest {
             args(new Day10(), 318099L, 2389738699L),
             args(new Day11(), 1585L, 382L),
             args(new Day12(), 5874L, 153592L),
-            args(
-                new Day13(),
-                689L,
-                format(
-                    " ▒ ▒ ▒ . . ▒ . . . . ▒ ▒ ▒ . . . ▒ ▒ . . . . ▒ ▒ . . ▒ ▒ . . ▒ . . . . ▒ . . ▒ .%n ▒ . . ▒ . ▒ . . . . ▒ . . ▒ . ▒ . . ▒ . . . . ▒ . ▒ . . ▒ . ▒ . . . . ▒ . . ▒ .%n ▒ . . ▒ . ▒ . . . . ▒ ▒ ▒ . . ▒ . . . . . . . ▒ . ▒ . . . . ▒ . . . . ▒ . . ▒ .%n ▒ ▒ ▒ . . ▒ . . . . ▒ . . ▒ . ▒ . . . . . . . ▒ . ▒ . ▒ ▒ . ▒ . . . . ▒ . . ▒ .%n ▒ . ▒ . . ▒ . . . . ▒ . . ▒ . ▒ . . ▒ . ▒ . . ▒ . ▒ . . ▒ . ▒ . . . . ▒ . . ▒ .%n ▒ . . ▒ . ▒ ▒ ▒ ▒ . ▒ ▒ ▒ . . . ▒ ▒ . . . ▒ ▒ . . . ▒ ▒ ▒ . ▒ ▒ ▒ ▒ . . ▒ ▒ . .%n")))
+            args(new Day13(), 689L, D13P2))
         .flatMap(
             a ->
                 Stream.of(
