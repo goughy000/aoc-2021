@@ -3,7 +3,7 @@ package com.github.goughy000;
 import static com.github.goughy000.Collections2.*;
 import static java.util.Collections.*;
 import static java.util.Map.entry;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 import static java.util.stream.IntStream.range;
 
 import java.util.List;
@@ -16,12 +16,12 @@ public class Day14 extends Solution {
   }
 
   @Override
-  protected Object part1() {
+  protected Long part1() {
     return solve(10);
   }
 
   @Override
-  protected Object part2() {
+  protected Long part2() {
     return solve(40);
   }
 
@@ -46,19 +46,17 @@ public class Day14 extends Solution {
       map =
           map.entrySet().stream()
               .flatMap(
-                  entry -> {
-                    var pair = entry.getKey();
-                    return pair.splitWith(instructions.get(pair)).stream()
-                        .map(p -> entry(p, entry.getValue()));
-                  })
+                  mapEntry(
+                      (pair, total) ->
+                          pair.splitWith(instructions.get(pair)).stream()
+                              .map(p -> entry(p, total))))
               .collect(toMap(Entry::getKey, Entry::getValue, Long::sum));
     }
 
     var counts =
         Stream.concat(
                 Stream.of(entry(first(polymer), 1L)),
-                map.entrySet().stream()
-                    .map(entry -> entry(entry.getKey().right(), entry.getValue())))
+                map.entrySet().stream().map(mapEntry((pair, total) -> entry(pair.right(), total))))
             .collect(toMap(Entry::getKey, Entry::getValue, Long::sum))
             .values();
 

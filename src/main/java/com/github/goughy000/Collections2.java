@@ -8,6 +8,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -107,5 +108,9 @@ public final class Collections2 {
     var sorted = new ArrayList<T>(list);
     Collections.sort(sorted);
     return sorted;
+  }
+
+  public static <K, V, R> Function<Entry<K, V>, R> mapEntry(BiFunction<K, V, R> function) {
+    return entry -> function.apply(entry.getKey(), entry.getValue());
   }
 }
