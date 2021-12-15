@@ -4,11 +4,11 @@ public enum Axis {
   X,
   Y;
 
-  public Integer pointValue(Point point) {
+  public long pointValue(Point point) {
     return this == X ? point.x() : point.y();
   }
 
-  public Point mirror(Point point, int fold) {
+  public Point mirror(Point point, long fold) {
     var v = pointValue(point);
     if (v == fold) return null;
     if (v < fold) return point;

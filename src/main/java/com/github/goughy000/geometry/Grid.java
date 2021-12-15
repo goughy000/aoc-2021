@@ -1,9 +1,11 @@
 package com.github.goughy000.geometry;
 
 import static java.lang.String.format;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Stream.iterate;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -32,11 +34,11 @@ public class Grid<T> {
     return width * height;
   }
 
-  public T getValue(int x, int y) {
+  public T getValue(long x, long y) {
     return getValue(new Point(x, y));
   }
 
-  public boolean containsPoint(int x, int y) {
+  public boolean containsPoint(long x, long y) {
     return containsPoint(new Point(x, y));
   }
 
@@ -86,7 +88,7 @@ public class Grid<T> {
     return map.keySet().stream().map(this::location);
   }
 
-  private GridLocation<T> location(Point point) {
+  public GridLocation<T> location(Point point) {
     return new GridLocation<>(this, point);
   }
 
@@ -101,7 +103,7 @@ public class Grid<T> {
     }
   }
 
-  public Grid<T> fold(Axis axis, int fold, BinaryOperator<T> merge) {
+  public Grid<T> fold(Axis axis, long fold, BinaryOperator<T> merge) {
     var folded = new HashMap<Point, T>();
     for (var entry : map.entrySet()) {
       var point = entry.getKey();
@@ -149,11 +151,17 @@ public class Grid<T> {
   public String toString() {
     var sb = new StringBuilder();
 
-    var pad = 1 + values().map(Object::toString).map(String::length).reduce(0, Math::max);
+    var pad =
+        1
+            + values()
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .map(String::length)
+                .reduce(0, Math::max);
 
-    for (var y = 0; y < height; y++) {
+    for (var y = 0L; y < height; y++) {
       if (y > 0) sb.append(format("%n"));
-      for (var x = 0; x < width; x++) {
+      for (var x = 0L; x < width; x++) {
         var v = getValue(x, y);
         var s = v == null ? "." : String.valueOf(v);
         sb.append(format("%1$" + pad + "s", s));
@@ -161,6 +169,60 @@ public class Grid<T> {
     }
 
     return sb.toString();
+  }
+
+  public Grid<T> resize(long width, long height) {
+    return resize(
+        width,
+        height,
+        $ -> {
+          throw new RuntimeException("value function must be provided for a growing grid");
+        });
+  }
+
+  public Grid<T> resize(long width, long height, Function<Point, T> value) {
+    var copy = new HashMap<Point, T>();
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        var point = new Point(x, y);
+        var v = containsPoint(point) ? getValue(point) : value.apply(point);
+        copy.put(point, v);
+      }
+    }
+    return new Grid<>(copy, width, height);
+  }
+
+  public Long aStar(Point start, Point goal, BiFunction<Point, Point, Long> scorer) {
+    long high = Long.MAX_VALUE;
+    Function<Point, Long> estimator = point -> (long) point.distanceTo(goal);
+    var distances = new HashMap<Point, Long>();
+    var scores = new HashMap<Point, Long>();
+    var open = new PriorityQueue<Point>(comparing(o -> distances.getOrDefault(o, high)));
+
+    distances.put(start, estimator.apply(start));
+    scores.put(start, 0L);
+    open.add(start);
+
+    while (!open.isEmpty()) {
+      var current = open.remove();
+      if (current.equals(goal)) return scores.get(goal);
+
+      current
+          .cardinals()
+          .filter(this::containsPoint)
+          .forEach(
+              neighbor -> {
+                var tentative = scores.get(current) + scorer.apply(current, neighbor);
+
+                if (tentative < scores.getOrDefault(neighbor, high)) {
+                  scores.put(neighbor, tentative);
+                  distances.put(neighbor, tentative + estimator.apply(neighbor));
+
+                  if (!open.contains(neighbor)) open.add(neighbor);
+                }
+              });
+    }
+    throw new RuntimeException(format("No route found from %s -> %s", start, goal));
   }
 
   public record GridLocation<T>(Grid<T> grid, Point point) {
